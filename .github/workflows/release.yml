@@ -17,6 +17,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Ubuntu 24.04 запрещает непривилегированные user namespaces без профиля AppArmor,
+      # и песочница Chromium в Electron падает. На одноразовом раннере снимаем ограничение.
+      - name: Разрешить user namespaces для песочницы Electron
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: E2E (Playwright for Electron)
         run: xvfb-run --auto-servernum make e2e
 

@@ -60,7 +60,7 @@ linux:
 
 publish:
   provider: github
-  owner: restless-app
+  owner: NikitaLobanovv
   repo: restless
   releaseType: release
 generateUpdatesFilesForAllChannels: true

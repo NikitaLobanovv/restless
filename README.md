@@ -36,7 +36,7 @@ GraphQL, WebSocket/SSE, хранение в файлах) — после v1.0.0,
 Нужны Docker с Compose v2.20+, Node.js 22 LTS и GNU Make (на Windows — в WSL2).
 
 ```bash
-git clone https://github.com/restless-app/restless.git && cd restless && make up
+git clone https://github.com/NikitaLobanovv/restless.git && cd restless && make up
 ```
 
 `make up` создаёт `.env` из `.env.example`, ставит зависимости, поднимает PostgreSQL 16, go-httpbin и

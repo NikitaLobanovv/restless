@@ -6,7 +6,7 @@
   "main": "./out/main/index.js",
   "author": "Nikita",
   "license": "MIT",
-  "homepage": "https://github.com/restless-app/restless",
+  "homepage": "https://github.com/NikitaLobanovv/restless",
   "engines": {
     "node": ">=22"
   },

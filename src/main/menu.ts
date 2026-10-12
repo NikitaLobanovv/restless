@@ -6,7 +6,7 @@ import { t } from './i18n'
 import { checkForUpdatesManually } from './updater'
 import { broadcast, getMainWindow } from './window'
 
-const REPO_URL = 'https://github.com/restless-app/restless'
+const REPO_URL = 'https://github.com/NikitaLobanovv/restless'
 
 function action(a: MenuAction): () => void {
   return () => getMainWindow()?.webContents.send('menu:action', a)
