@@ -1,0 +1,331 @@
+{
+  "a11y": {
+    "skipToEditor": "Skip to request editor"
+  },
+  "common": {
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "close": "Close",
+    "copySuffix": " (copy)",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "name": "Name",
+    "nothingFound": "Nothing found",
+    "ok": "OK",
+    "rename": "Rename",
+    "save": "Save"
+  },
+  "menu": {
+    "file": "File",
+    "newRequest": "New Request",
+    "save": "Save",
+    "importCurl": "Import from cURL…",
+    "copyCurl": "Copy as cURL",
+    "closeTab": "Close Tab",
+    "quit": "Quit",
+    "edit": "Edit",
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select All",
+    "formatBody": "Format Body",
+    "request": "Request",
+    "send": "Send",
+    "quickSearch": "Quick Search",
+    "switchEnv": "Switch Environment",
+    "editVariables": "Variables…",
+    "nextTab": "Next Tab",
+    "prevTab": "Previous Tab",
+    "view": "View",
+    "toggleSidebar": "Toggle Sidebar",
+    "toggleLayout": "Response Right/Bottom",
+    "theme": "Theme",
+    "language": "Language",
+    "resetZoom": "Actual Size",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "fullscreen": "Toggle Full Screen",
+    "help": "Help",
+    "docs": "Documentation",
+    "reportIssue": "Report an Issue",
+    "checkUpdates": "Check for Updates…",
+    "about": "About",
+    "updateChannel": "Update channel"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "updates": {
+    "devMode": "Auto-update is disabled in development mode.",
+    "available": "Version {{version}} is available and will be installed on restart.",
+    "upToDate": "You are on the latest version.",
+    "failed": "Could not check for updates"
+  },
+  "sidebar": {
+    "title": "Sections",
+    "collections": "Collections",
+    "history": "History",
+    "environments": "Environments",
+    "toggle": "Toggle sidebar",
+    "resize": "Sidebar width",
+    "search": {
+      "collections": "Search by name or URL",
+      "history": "Search history",
+      "environments": "Search environments"
+    }
+  },
+  "collections": {
+    "create": "New collection",
+    "createFirst": "Create a collection first",
+    "defaultName": "My collection",
+    "emptyTitle": "No collections yet",
+    "emptyHint": "Press “+” to create a collection, or save a request with Ctrl+S.",
+    "newRequest": "New request",
+    "newFolder": "New folder",
+    "folderDefault": "New folder",
+    "variables": "Collection variables…",
+    "open": "Open",
+    "duplicate": "Duplicate",
+    "confirmDelete": {
+      "collection": "Delete collection “{{name}}” with all folders, requests and variables?",
+      "folder": "Delete folder “{{name}}” with all its contents?",
+      "request": "Delete request “{{name}}”?"
+    }
+  },
+  "request": {
+    "editor": "Request editor",
+    "sections": "Request sections",
+    "method": "HTTP method",
+    "customMethod": "Custom method",
+    "customMethodOption": "Custom…",
+    "url": "Request URL",
+    "urlPlaceholder": "https://api.example.com/users — or paste a cURL command",
+    "urlRequired": "Enter a URL",
+    "send": "Send",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveAs": "Save as…",
+    "saveTo": "Save to",
+    "saved": "Request saved",
+    "newName": "New request",
+    "untitled": "Untitled",
+    "params": "Params",
+    "headers": "Headers",
+    "body": "Body",
+    "auth": "Auth",
+    "settings": "Settings"
+  },
+  "kv": {
+    "key": "Key",
+    "value": "Value",
+    "description": "Description",
+    "enabled": "Enabled",
+    "enabledFor": "Enable “{{key}}”",
+    "row": "row {{n}}",
+    "keyRow": "Key, row {{n}}",
+    "valueRow": "Value, row {{n}}",
+    "descriptionRow": "Description, row {{n}}",
+    "removeRow": "Remove row {{n}}",
+    "kind": "Field type",
+    "text": "Text",
+    "file": "File",
+    "noFile": "No file selected",
+    "chooseFile": "Choose file…",
+    "chooseFiles": "Choose files…"
+  },
+  "headers": {
+    "auto": "set automatically from body type; add your own to override"
+  },
+  "body": {
+    "type": "Body type",
+    "editor": "Request body",
+    "format": "Format",
+    "formatError": "Could not format: {{message}}",
+    "invalidJson": "Invalid JSON: {{message}}",
+    "noneHint": "This request has no body.",
+    "types": {
+      "none": "none",
+      "json": "JSON",
+      "text": "Text",
+      "xml": "XML",
+      "urlencoded": "x-www-form-urlencoded",
+      "multipart": "multipart/form-data",
+      "binary": "Binary"
+    }
+  },
+  "auth": {
+    "comingSoon": "The Auth tab (Basic, Bearer, API Key, OAuth 2.0) is coming in the next version.",
+    "workaround": "For now add an Authorization header on the Headers tab, e.g. {{example}}."
+  },
+  "settings": {
+    "timeout": "Timeout, s",
+    "timeoutHint": "0 means no limit. Default is 30 s.",
+    "followRedirects": "Follow redirects",
+    "verifySsl": "Verify SSL certificate"
+  },
+  "response": {
+    "title": "Response",
+    "sections": "Response sections",
+    "emptyTitle": "No response yet",
+    "emptyHint": "Enter a URL and press Send or Ctrl+Enter.",
+    "sending": "Sending request…",
+    "body": "Body",
+    "headers": "Headers",
+    "cookies": "Cookies",
+    "timeline": "Timeline",
+    "time": "Duration",
+    "size": "Response size",
+    "bodyMode": "Body view mode",
+    "mode": {
+      "pretty": "Pretty",
+      "raw": "Raw",
+      "preview": "Preview"
+    },
+    "search": "Search in body",
+    "copy": "Copy response",
+    "copied": "Response copied",
+    "expired": "Response is no longer in memory — send the request again",
+    "save": "Save to file",
+    "savedToFile": "Response saved",
+    "largeNotice": "Large response ({{size}}) is shown without highlighting. Consider saving it to a file.",
+    "truncated": "Only part of the response is shown. Use “Save to file” for the full body.",
+    "noPreview": "Preview is available for HTML and images.",
+    "imagePreview": "Image from response",
+    "htmlPreview": "HTML preview (scripts disabled)",
+    "noCookies": "The response sets no cookies.",
+    "redirects_one": "{{count}} redirect",
+    "redirects_other": "{{count}} redirects"
+  },
+  "cookies": {
+    "name": "Name",
+    "value": "Value",
+    "domain": "Domain",
+    "path": "Path",
+    "expires": "Expires",
+    "flags": "Flags",
+    "session": "session"
+  },
+  "timeline": {
+    "dns": "DNS lookup",
+    "tcp": "TCP connect",
+    "tls": "TLS handshake",
+    "ttfb": "Waiting (TTFB)",
+    "download": "Download",
+    "total": "Total",
+    "note": "Phases are measured for the first connection; with redirects, Total includes every hop."
+  },
+  "errors": {
+    "TIMEOUT": "Request timed out",
+    "CANCELLED": "Request cancelled",
+    "NETWORK": "Network error",
+    "TLS": "TLS/SSL error",
+    "INVALID_URL": "Invalid URL",
+    "FILE": "File read error",
+    "UNKNOWN": "Request failed",
+    "tlsHint": "For a self-signed certificate turn off “Verify SSL certificate” in request settings."
+  },
+  "tabs": {
+    "open": "Open requests",
+    "none": "No open tabs",
+    "unsaved": "Unsaved changes",
+    "unsavedTitle": "Unsaved changes",
+    "unsavedMessage": "Request “{{name}}” has unsaved changes. Close the tab?",
+    "closeWithoutSaving": "Close without saving",
+    "close": "Close",
+    "closeNamed": "Close “{{name}}”",
+    "closeOthers": "Close others"
+  },
+  "history": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "open": "Open",
+    "replay": "Replay",
+    "saveToCollection": "Save to collection…",
+    "clear": "Clear history",
+    "clearConfirm": "Delete the whole request history?",
+    "emptyTitle": "History is empty",
+    "emptyHint": "Every request you send will show up here.",
+    "count_one": "{{count}} entry",
+    "count_other": "{{count}} entries"
+  },
+  "env": {
+    "active": "Active environment",
+    "none": "No environment",
+    "variables": "Variables",
+    "globals": "Globals",
+    "create": "New environment",
+    "editVariables": "Edit variables",
+    "editVariablesOf": "Edit variables of “{{name}}”",
+    "confirmDelete": "Delete environment “{{name}}” and its variables?",
+    "emptyTitle": "No environments yet",
+    "emptyHint": "Create dev, prod, etc. — variables like {{example}} will be substituted automatically.",
+    "switched": "Environment: {{name}}"
+  },
+  "variables": {
+    "title": "Variables",
+    "scopeLabel": "Scope",
+    "scope": {
+      "global": "Global",
+      "environment": "Environment",
+      "collection": "Collection"
+    },
+    "name": "Name",
+    "value": "Value",
+    "secret": "Secret",
+    "nameRow": "Variable name, row {{n}}",
+    "valueRow": "Variable value, row {{n}}",
+    "secretRow": "Secret, row {{n}}",
+    "secretKeep": "•••••• (keep stored value)",
+    "show": "Show value",
+    "hide": "Hide value",
+    "add": "Add variable",
+    "saved": "Variables saved",
+    "duplicate": "Duplicate names: {{names}}",
+    "precedence": "Precedence: environment → collection → global",
+    "unresolved": "Variable is not defined",
+    "unresolvedWarning": "Undefined variables: {{names}}",
+    "emptyValue": "(empty value)"
+  },
+  "secrets": {
+    "weakStorage": "OS keyring is unavailable: secrets are encrypted with Electron's fixed key (basic_text). Install gnome-keyring or KWallet.",
+    "weakShort": "Weak secret storage",
+    "unavailable": "OS encryption is unavailable — secret variables cannot be saved."
+  },
+  "curl": {
+    "copy": "Copy as cURL",
+    "copied": "cURL command copied",
+    "import": "Import",
+    "imported": "Request imported from cURL",
+    "importTitle": "Import from cURL",
+    "importLabel": "Paste a cURL command",
+    "notCurl": "This doesn't look like a cURL command",
+    "parseError": "Could not parse cURL: {{message}}",
+    "secretsTitle": "The request uses secret variables",
+    "secretsDetail": "Secrets: {{names}}. Put their plain-text values into the cURL command?",
+    "keepPlaceholders": "Keep {{example}}",
+    "includeSecrets": "Include values"
+  },
+  "quickSearch": {
+    "title": "Quick search",
+    "placeholder": "Request name or URL",
+    "results": "Matching requests"
+  },
+  "layout": {
+    "toggle": "Response right / bottom",
+    "resize": "Panel size"
+  },
+  "db": {
+    "title": "No database connection",
+    "description": "Restless keeps collections, history and environments in PostgreSQL. Start the database or provide a connection string.",
+    "connectionString": "Connection string",
+    "hint": "Leave empty to retry with current settings (DATABASE_URL). The string is stored encrypted.",
+    "check": "Check",
+    "checking": "Checking…",
+    "howTo": "How to start the database locally"
+  }
+}

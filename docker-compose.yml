@@ -1,0 +1,70 @@
+name: restless
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT}:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/migrate.Dockerfile
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
+  # Ежедневный pg_dump в ./backups, хранятся последние 7 дампов
+  backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    entrypoint: ['/bin/sh', '/backup.sh']
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      BACKUP_KEEP: ${BACKUP_KEEP:-7}
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+    volumes:
+      - ./docker/backup.sh:/backup.sh:ro
+      - ./backups:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ['dev']
+
+  # Тестовый HTTP-сервер для ручной проверки и интеграционных тестов
+  echo-api:
+    image: mccutchen/go-httpbin:v2.15.0
+    ports:
+      - '127.0.0.1:${ECHO_PORT}:8080'
+    profiles: ['dev', 'test']
+
+  # Сборка инсталляторов Linux и Windows без локального тулчейна
+  builder:
+    image: electronuserland/builder:20-wine
+    working_dir: /project
+    volumes:
+      - .:/project
+      - builder_node_modules:/project/node_modules
+    profiles: ['build']
+
+volumes:
+  pgdata:
+  builder_node_modules:

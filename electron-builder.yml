@@ -1,0 +1,66 @@
+appId: dev.restless.app
+productName: Restless
+copyright: Copyright © 2026 Nikita
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+extraResources:
+  # SQL-миграции применяются приложением при старте
+  - from: drizzle
+    to: drizzle
+asar: true
+compression: maximum
+
+# Electron Fuses (раздел 9 ТЗ)
+electronFuses:
+  runAsNode: false
+  enableNodeCliInspectArguments: false
+  enableNodeOptionsEnvironmentVariable: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+  enableCookieEncryption: true
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: ${productName}-Setup-${version}.${ext}
+
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  category: public.app-category.developer-tools
+  icon: build/icon.png
+  hardenedRuntime: true
+  # Подпись и нотаризация — через CSC_LINK / APPLE_ID в CI; без них сборка будет неподписанной
+  notarize: false
+dmg:
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  category: Development
+  icon: build/icon.png
+  maintainer: Nikita <noreply@restless.dev>
+  synopsis: Local offline REST client
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+publish:
+  provider: github
+  owner: restless-app
+  repo: restless
+  releaseType: release
+generateUpdatesFilesForAllChannels: true

@@ -1,0 +1,10 @@
+out
+dist
+coverage
+node_modules
+drizzle
+test-results
+playwright-report
+package-lock.json
+backups
+.vitest
