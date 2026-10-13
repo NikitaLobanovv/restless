@@ -10,10 +10,8 @@ import type { HttpErrorData, HttpResult, RequestDraft, TimelinePhases } from '..
 import { buildBody, type FileGuard } from './body'
 import { ResponseStore } from './response-store'
 
-/** Сколько текста отдаём в renderer (больше — только «Сохранить в файл») */
 const MAX_TEXT_TO_RENDERER = 20 * 1024 * 1024
 const MAX_IMAGE_PREVIEW = 10 * 1024 * 1024
-/** Жёсткий предел тела, чтобы не уронить main-процесс */
 const MAX_BODY_BYTES = 512 * 1024 * 1024
 const MAX_REDIRECTS = 20
 
@@ -33,10 +31,6 @@ interface Timing {
 
 const now = (): number => performance.now()
 
-/**
- * Собственный connector undici: открывает сокет сам и фиксирует фазы
- * DNS / TCP / TLS первого соединения для вкладки Timeline.
- */
 function timedConnector(t: Timing, verifySsl: boolean): buildConnector.connector {
   return (opts, cb) => {
     const first = t.tcpEnd === undefined
@@ -108,7 +102,6 @@ const inflate = {
 async function decode(buf: Buffer, encoding: string | undefined): Promise<Buffer> {
   if (!encoding) return buf
   let out = buf
-  // кодировки применяются по порядку, снимаем в обратном
   for (const enc of encoding
     .split(',')
     .map((e) => e.trim().toLowerCase())
@@ -188,7 +181,6 @@ function classifyError(err: unknown, signal: AbortSignal, durationMs: number): H
 
 export interface SendOptions {
   requestId: string
-  /** Черновик с уже подставленными переменными */
   draft: RequestDraft
   fileGuard: FileGuard
   userAgent: string
@@ -221,7 +213,6 @@ export async function sendHttp(opts: SendOptions): Promise<HttpResult> {
   })
 
   try {
-    // URL — источник истины: включённые параметры таблицы синхронизированы с его query
     let url = normalizeUrl(draft.url)
     let method = draft.method.toUpperCase()
     let sendBody = true
@@ -240,7 +231,6 @@ export async function sendHttp(opts: SendOptions): Promise<HttpResult> {
     for (;;) {
       const headers = { ...baseHeaders }
       let body: Awaited<ReturnType<typeof buildBody>>['body'] = null
-      // как в Postman, тело допускается у любого метода, включая GET
       if (sendBody && draft.body.type !== 'none') {
         const built = await buildBody(draft.body, opts.fileGuard)
         body = built.body
@@ -275,7 +265,6 @@ export async function sendHttp(opts: SendOptions): Promise<HttpResult> {
             if (k.toLowerCase() === 'content-type' || k.toLowerCase() === 'content-length') delete baseHeaders[k]
           }
         }
-        // при переходе на другой origin не отправляем авторизацию и cookies
         if (url.origin !== new URL(redirects[redirects.length - 1]).origin) {
           for (const k of Object.keys(baseHeaders)) {
             if (['authorization', 'cookie', 'proxy-authorization'].includes(k.toLowerCase())) delete baseHeaders[k]

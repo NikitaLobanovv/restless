@@ -3,9 +3,7 @@ import { newId, paramsFromUrl, parseQuery, splitUrl, urlWithParams } from '../ur
 
 export class CurlParseError extends Error {}
 
-/** Разбивает строку командной оболочки на аргументы (bash-подобные правила) */
 export function tokenize(input: string): string[] {
-  // переносы строк: bash `\`, cmd `^`, PowerShell `` ` ``
   const src = input
     .replace(/\\\r?\n/g, ' ')
     .replace(/\^\r?\n/g, ' ')
@@ -32,7 +30,6 @@ export function tokenize(input: string): string[] {
       cur += src.slice(i + 1, end)
       i = end + 1
     } else if (ch === '$' && src[i + 1] === "'") {
-      // ANSI-C quoting: $'...'
       i += 2
       while (i < src.length && src[i] !== "'") {
         if (src[i] === '\\' && i + 1 < src.length) {
@@ -70,7 +67,6 @@ export function tokenize(input: string): string[] {
   return tokens
 }
 
-/** Опции, у которых есть значение (короткие → длинные) */
 const SHORT_WITH_VALUE: Record<string, string> = {
   X: 'request',
   H: 'header',
@@ -257,7 +253,6 @@ export function parseCurl(command: string): RequestDraft {
         const idx = v.indexOf(':')
         if (idx > 0) {
           const value = v.slice(idx + 1).trim()
-          // `-H 'X;'` в curl означает пустое значение, `-H 'X:'` — удаление; сохраняем как пустое
           headers.push(kv(v.slice(0, idx).trim(), value))
         } else if (v.endsWith(';')) {
           headers.push(kv(v.slice(0, -1).trim(), ''))
@@ -286,7 +281,6 @@ export function parseCurl(command: string): RequestDraft {
         if (eq <= 0) break
         const key = v.slice(0, eq)
         let value = v.slice(eq + 1)
-        // `;type=...` и прочие атрибуты отбрасываем
         if (o.name === 'form') {
           const semi = value.search(/;(type|filename|headers)=/)
           if (semi >= 0) value = value.slice(0, semi)

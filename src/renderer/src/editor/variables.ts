@@ -46,7 +46,6 @@ const decorations = ViewPlugin.fromClass(
   { decorations: (v) => v.decorations }
 )
 
-/** Подсказка значения при наведении на `{{name}}` */
 const tooltip = hoverTooltip((view, pos) => {
   const line = view.state.doc.lineAt(pos)
   for (const m of line.text.matchAll(VARIABLE_RE)) {

@@ -5,11 +5,6 @@ import type { Plugin } from 'vite'
 
 const alias = { '@shared': resolve(__dirname, 'src/shared') }
 
-/**
- * Строгий CSP в production-сборке renderer: без unsafe-eval и удалённых скриптов.
- * Дублирует заголовок из main (для file:// заголовки ответа применяются не всегда).
- * В dev-режиме не добавляется — HMR нужна inline-преамбула React Refresh.
- */
 const PROD_CSP = [
   "default-src 'self'",
   "script-src 'self'",
@@ -42,7 +37,6 @@ export default defineConfig({
   preload: {
     resolve: { alias },
     build: {
-      // Sandbox-preload: один самодостаточный CJS-файл без внешних зависимостей
       externalizeDeps: false,
       rollupOptions: {
         output: { format: 'cjs', entryFileNames: '[name].js' }
@@ -53,7 +47,6 @@ export default defineConfig({
     resolve: { alias },
     plugins: [react(), cspPlugin()],
     build: {
-      // Без eval-подобных конструкций в бандле (строгий CSP)
       target: 'chrome140'
     }
   }

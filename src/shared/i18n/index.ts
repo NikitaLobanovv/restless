@@ -6,7 +6,6 @@ export const resources = { ru, en } as const
 
 type Tree = { [k: string]: string | Tree }
 
-/** Простой резолвер `a.b.c` + интерполяция `{{name}}` — для main-процесса (меню, диалоги) */
 export function translate(lang: Language, key: string, params?: Record<string, string | number>): string {
   const lookup = (l: Language): string | undefined => {
     let node: string | Tree | undefined = resources[l] as Tree

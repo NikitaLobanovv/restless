@@ -10,7 +10,6 @@ import type { SecretCodec } from '../../src/main/secrets'
 
 export const migrationsFolder = resolve(__dirname, '../../drizzle')
 
-/** In-memory PostgreSQL (PGlite) с теми же миграциями, что и в приложении */
 export async function createTestDb(): Promise<{ db: Db; workspaceId: string; close: () => Promise<void> }> {
   const client = new PGlite({ extensions: { pg_trgm } })
   const db = drizzle(client, { schema }) as unknown as Db
@@ -23,7 +22,6 @@ export async function createTestDb(): Promise<{ db: Db; workspaceId: string; clo
   return { db, workspaceId, close: () => client.close() }
 }
 
-/** Тестовый «шифр»: формат как у safeStorage-кодека, но без ОС */
 export const fakeCodec: SecretCodec = {
   encrypt: (plain) => `enc:v1:${Buffer.from(plain, 'utf8').toString('base64')}`,
   decrypt: (stored) => (stored.startsWith('enc:v1:') ? Buffer.from(stored.slice(7), 'base64').toString('utf8') : stored)

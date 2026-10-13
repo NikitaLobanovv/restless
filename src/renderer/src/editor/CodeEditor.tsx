@@ -33,18 +33,13 @@ interface CodeEditorProps {
   onChange?: (value: string) => void
   language?: EditorLanguage
   readOnly?: boolean
-  /** Подсветка `{{var}}`, подсказки и автодополнение */
   variables?: boolean
-  /** Однострочный режим: без переносов, Enter вызывает onEnter */
   singleLine?: boolean
   onEnter?: () => void
-  /** Перехват вставки; вернуть true, если вставка обработана */
   onPaste?: (text: string) => boolean
   placeholder?: string
   ariaLabel: string
-  /** Полный режим: номера строк, сворачивание, поиск */
   full?: boolean
-  /** Минимум расширений — для очень больших ответов */
   plain?: boolean
   lineWrapping?: boolean
   className?: string
@@ -61,7 +56,6 @@ export function CodeEditor(props: CodeEditorProps): React.JSX.Element {
   const roCompartment = useRef(new Compartment())
   const hints = useData((s) => s.hints)
 
-  // Редактор создаётся один раз; меняющиеся пропсы применяются через compartments/effects ниже
   useEffect(() => {
     const p = propsRef.current
     const keys: KeyBinding[] = []
@@ -98,7 +92,6 @@ export function CodeEditor(props: CodeEditorProps): React.JSX.Element {
     if (p.singleLine) {
       extensions.push(
         keymap.of([...keys, ...closeBracketsKeymap, ...completionKeymap]),
-        // переводы строк при вставке превращаем в пробелы
         EditorState.transactionFilter.of((tr) => {
           if (!tr.docChanged || tr.newDoc.lines === 1) return tr
           const text = tr.newDoc.toString().replace(/\r?\n/g, ' ')
@@ -150,7 +143,6 @@ export function CodeEditor(props: CodeEditorProps): React.JSX.Element {
     }
   }, [props.singleLine, props.full, props.plain, props.variables, props.lineWrapping])
 
-  // Внешнее изменение значения (например, форматирование или смена вкладки)
   useEffect(() => {
     const v = view.current
     if (!v) return

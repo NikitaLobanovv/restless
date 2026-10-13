@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import type { RequestDraft } from '@shared/model'
 
-/** Модальные диалоги с промис-API (window.prompt в Electron не поддерживается) */
-
 export interface PromptRequest {
   kind: 'prompt'
   title: string

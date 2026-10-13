@@ -12,16 +12,11 @@ function action(a: MenuAction): () => void {
   return () => getMainWindow()?.webContents.send('menu:action', a)
 }
 
-/**
- * Горячие клавиши обрабатывает renderer (чтобы они работали и внутри редакторов),
- * поэтому у пунктов меню `registerAccelerator: false` — сочетание только отображается.
- */
 function item(label: string, a: MenuAction, accelerator?: string): MenuItemConstructorOptions {
   return { label, accelerator, registerAccelerator: false, click: action(a) }
 }
 
 function setConfig(patch: { theme?: ThemeSource; language?: Language }): void {
-  // изменения применяет renderer через config:set — так состояние остаётся единым
   broadcast('menu:action', patch.theme ? `theme:${patch.theme}` : `language:${patch.language}`)
 }
 

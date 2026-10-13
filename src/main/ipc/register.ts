@@ -8,7 +8,6 @@ import { isTrustedUrl } from '../security'
 const registered = new Set<Channel>()
 
 function isTrustedSender(frame: WebFrameMain | null): boolean {
-  // только главный фрейм нашего окна; iframe предпросмотра HTML сюда не попадёт
   if (!frame || frame.parent !== null) return false
   return isTrustedUrl(frame.url)
 }
@@ -18,10 +17,6 @@ type Handler<C extends Channel> = (
   event: IpcMainInvokeEvent
 ) => Promise<ChannelOutput<C>> | ChannelOutput<C>
 
-/**
- * Регистрирует обработчик канала: проверка отправителя → zod-валидация → вызов.
- * Ошибки возвращаются renderer'у только текстом, без стека.
- */
 export function handle<C extends Channel>(channel: C, fn: Handler<C>): void {
   if (registered.has(channel)) throw new Error(`IPC channel ${channel} registered twice`)
   registered.add(channel)

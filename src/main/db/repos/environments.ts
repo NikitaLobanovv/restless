@@ -6,8 +6,6 @@ import { environments, variables } from '../schema'
 import type { Db } from '../types'
 import { NotFoundError } from './collections'
 
-/* ---------- Окружения ---------- */
-
 export async function listEnvironments(db: Db, workspaceId: string): Promise<EnvironmentInfo[]> {
   return db
     .select({ id: environments.id, name: environments.name, isActive: environments.isActive })
@@ -57,13 +55,10 @@ export async function getActiveEnvironmentId(db: Db, workspaceId: string): Promi
   return row?.id ?? null
 }
 
-/* ---------- Переменные ---------- */
-
 function toView(row: typeof variables.$inferSelect): VariableView {
   return {
     id: row.id,
     key: row.key,
-    // значение секрета никогда не покидает main-процесс
     value: row.isSecret ? null : row.value,
     isSecret: row.isSecret,
     hasValue: row.value !== ''
@@ -79,10 +74,6 @@ export async function listVariables(db: Db, scope: VariableScope, scopeId: strin
   return rows.map(toView)
 }
 
-/**
- * Заменяет набор переменных области целиком (одна транзакция).
- * Для секрета `value === undefined` означает «оставить сохранённое значение».
- */
 export async function saveVariables(
   db: Db,
   scope: VariableScope,
@@ -105,7 +96,6 @@ export async function saveVariables(
 
     const where = and(eq(variables.scope, scope), eq(variables.scopeId, scopeId))
     await tx.delete(variables).where(keepIds.length ? and(where, notInArray(variables.id, keepIds)) : where)
-    // временно уводим ключи, чтобы перестановки не конфликтовали с уникальным индексом
     if (keepIds.length) {
       for (const id of keepIds) {
         await tx
@@ -123,7 +113,6 @@ export async function saveVariables(
         else if (prev) stored = prev.isSecret ? prev.value : prev.value === '' ? '' : codec.encrypt(prev.value)
         else stored = ''
       } else {
-        // секрет → обычная: старое значение не раскрываем, если новое не передано
         stored = v.value ?? (prev && !prev.isSecret ? prev.value : '')
       }
       const values = { scope, scopeId, key: v.key, value: stored, isSecret: v.isSecret, sortOrder: i }
@@ -135,10 +124,8 @@ export async function saveVariables(
 }
 
 export interface ResolvedLayers {
-  /** [окружение, коллекция, глобальные] — в порядке приоритета */
   layers: VariableLayer[]
   sources: { scope: VariableScope; secretKeys: Set<string> }[]
-  /** Расшифрованные значения секретов — для маскирования в истории */
   secretValues: string[]
 }
 

@@ -23,10 +23,8 @@ export async function loadTabs(db: Db): Promise<OpenTabState[]> {
   return out
 }
 
-/** Полная замена набора вкладок одной транзакцией */
 export async function saveTabs(db: Db, tabs: OpenTabState[]): Promise<void> {
   await db.transaction(async (tx) => {
-    // ссылки на удалённые запросы/коллекции обнуляем, чтобы не нарушить FK
     const reqIds = [...new Set(tabs.map((t) => t.requestId).filter((x): x is string => !!x))]
     const colIds = [...new Set(tabs.map((t) => t.collectionId).filter((x): x is string => !!x))]
     const liveReq = new Set(
@@ -49,7 +47,6 @@ export async function saveTabs(db: Db, tabs: OpenTabState[]): Promise<void> {
         requestId: t.requestId && liveReq.has(t.requestId) ? t.requestId : null,
         collectionId: t.collectionId && liveCol.has(t.collectionId) ? t.collectionId : null,
         draftJson: t.draft,
-        // исходная версия нужна и несохранённым вкладкам — по ней виден индикатор изменений
         savedDraftJson: t.savedDraft,
         position: i,
         isActive: t.isActive

@@ -1,10 +1,5 @@
 import type { Language, ThemeSource } from './model'
 
-/**
- * Список IPC-каналов. Вынесен отдельно от zod-схем, чтобы preload
- * оставался крошечным: ему нужны только имена.
- * Формат имени — `namespace:method`, из него строится `window.api.namespace.method()`.
- */
 export const CHANNELS = [
   'app:info',
   'config:get',
@@ -53,7 +48,6 @@ export const CHANNELS = [
 
 export type Channel = (typeof CHANNELS)[number]
 
-/** События main → renderer */
 export const EVENTS = ['menu:action', 'config:changed', 'app:beforeQuit'] as const
 export type AppEvent = (typeof EVENTS)[number]
 

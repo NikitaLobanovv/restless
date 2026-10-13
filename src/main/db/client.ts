@@ -24,18 +24,14 @@ export class DbUnavailableError extends Error {
 }
 
 export function migrationsFolder(): string {
-  // в сборке — extraResources; в dev/preview — корень репозитория (out/main/../../drizzle)
   return app.isPackaged ? join(process.resourcesPath, 'drizzle') : join(__dirname, '../../drizzle')
 }
 
-/** Пароль никогда не попадает в сообщения об ошибках и логи */
 function sanitize(message: string, url: string): string {
   try {
     const u = new URL(url)
     if (u.password) return message.split(u.password).join('***')
-  } catch {
-    /* noop */
-  }
+  } catch {}
   return message
 }
 
@@ -47,7 +43,6 @@ async function tryConnect(url: string): Promise<void> {
     idleTimeoutMillis: 30_000,
     application_name: 'restless'
   })
-  // ошибка простаивающего соединения не должна ронять main-процесс
   next.on('error', (err) => {
     log.warn('pg pool error:', sanitize(err.message, url))
     status = { connected: false, error: 'Connection lost' }
@@ -84,7 +79,6 @@ function savedUrl(): string | null {
   }
 }
 
-/** Пробует по очереди: строку с экрана подключения, DATABASE_URL, значение по умолчанию */
 export async function connectOnStartup(): Promise<DbStatus> {
   const candidates = [savedUrl(), process.env.DATABASE_URL, DEFAULT_URL].filter(
     (u, i, arr): u is string => !!u && arr.indexOf(u) === i
@@ -103,7 +97,6 @@ export async function connectOnStartup(): Promise<DbStatus> {
   return status
 }
 
-/** Строка, введённая пользователем на экране подключения; при успехе сохраняется зашифрованной */
 export async function connectWithUrl(url: string): Promise<DbStatus> {
   try {
     await tryConnect(url)
@@ -121,9 +114,7 @@ export async function retry(): Promise<DbStatus> {
     try {
       await pool.query('select 1')
       return status
-    } catch {
-      /* переподключаемся ниже */
-    }
+    } catch {}
   }
   return connectOnStartup()
 }

@@ -12,7 +12,6 @@ interface ModalProps {
   testId?: string
 }
 
-/** Нативный <dialog>: фокус-ловушка, Esc и inert-фон из коробки */
 export function Modal({ title, onClose, children, footer, wide, className, testId }: ModalProps): React.JSX.Element {
   const { t } = useTranslation()
   const ref = useRef<HTMLDialogElement>(null)

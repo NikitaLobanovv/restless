@@ -8,7 +8,6 @@ let allowClose = false
 let pendingClose: (() => void) | null = null
 let quitting = false
 
-/** app.quit() отменяется, если окно отложило закрытие, — после сохранения вкладок повторяем выход */
 app.on('before-quit', () => {
   quitting = true
 })
@@ -23,7 +22,6 @@ export function broadcast(event: AppEvent, payload?: unknown): void {
   }
 }
 
-/** Renderer сохранил вкладки — если окно ждёт закрытия, закрываем */
 export function onTabsSaved(): void {
   pendingClose?.()
 }
@@ -57,7 +55,6 @@ export function createMainWindow(): BrowserWindow {
 
   win.once('ready-to-show', () => win.show())
 
-  // Перед закрытием даём renderer'у дописать черновики вкладок (не дольше 1,5 с)
   win.on('close', (event) => {
     if (allowClose) return
     event.preventDefault()

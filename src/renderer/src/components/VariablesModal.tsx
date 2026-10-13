@@ -9,11 +9,9 @@ import { Icon } from './Icon'
 import { Modal } from './Modal'
 
 interface Row {
-  /** id в БД или временный для новых строк */
   id: string
   persisted: boolean
   key: string
-  /** Для секрета: введённое значение; undefined — не менять сохранённое */
   value: string | undefined
   isSecret: boolean
   hasValue: boolean
@@ -228,7 +226,6 @@ export function VariablesModal(): React.JSX.Element | null {
                     onChange={(e) =>
                       update(r.id, {
                         isSecret: e.target.checked,
-                        // снятие флага не раскрывает сохранённое значение: его нужно ввести заново
                         value: e.target.checked ? r.value : (r.value ?? '')
                       })
                     }

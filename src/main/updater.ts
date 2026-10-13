@@ -6,7 +6,6 @@ import { log } from './log'
 
 const { autoUpdater } = electronUpdater
 
-/** Автообновление из GitHub Releases; каналы stable (latest) и beta */
 export function configureUpdater(): void {
   if (!app.isPackaged) return
   const beta = getUiConfig().updateChannel === 'beta'

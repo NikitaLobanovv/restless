@@ -6,7 +6,6 @@ import { RequestEditor } from './request/RequestEditor'
 import { ResponsePanel } from './response/ResponsePanel'
 import { TabsBar } from './TabsBar'
 
-/** Редактор запроса + панель ответа справа или снизу; разделитель перетаскивается, положение запоминается */
 export function Workspace(): React.JSX.Element {
   const { t } = useTranslation()
   const tab = useActiveTab()

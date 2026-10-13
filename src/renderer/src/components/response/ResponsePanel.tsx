@@ -13,7 +13,6 @@ import { Tabs } from '../Tabs'
 type View = 'body' | 'headers' | 'cookies' | 'timeline'
 type BodyMode = 'pretty' | 'raw' | 'preview'
 
-/** Pretty-форматирование до этого размера; дальше — как есть (быстрый рендер) */
 const PRETTY_LIMIT = 5 * 1024 * 1024
 
 function prettyBody(res: HttpResponseData): { text: string; lang: 'json' | 'xml' | 'html' | 'text' } {
@@ -197,7 +196,6 @@ function ResponseBody({ res }: { res: HttpResponseData }): React.JSX.Element {
               <img src={res.imageDataUrl} alt={t('response.imagePreview')} />
             </div>
           ) : lang === 'html' ? (
-            // без allow-scripts: скрипты из ответа не выполняются
             <iframe className="preview-frame" sandbox="" srcDoc={res.bodyText} title={t('response.htmlPreview')} />
           ) : (
             <p className="empty-hint">{t('response.noPreview')}</p>

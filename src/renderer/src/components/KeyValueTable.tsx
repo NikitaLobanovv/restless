@@ -13,9 +13,7 @@ interface Props<T extends Row> {
   rows: T[]
   onChange: (rows: T[]) => void
   ariaLabel: string
-  /** multipart: поле может быть файлом */
   allowFiles?: boolean
-  /** Строки «только для чтения» над таблицей (например, авто-заголовки) */
   autoRows?: { key: string; value: string; note: string }[]
   keyPlaceholder?: string
 }
@@ -25,14 +23,9 @@ function blankRow<T extends Row>(id: string, allowFiles: boolean): T {
   return (allowFiles ? { ...base, kind: 'text', files: [] } : base) as T
 }
 
-/**
- * Таблица ключ / значение / описание / «включено».
- * Последняя строка всегда пустая — ввод в неё создаёт новую запись.
- */
 export function KeyValueTable<T extends Row>(props: Props<T>): React.JSX.Element {
   const { t } = useTranslation()
   const { rows, onChange, allowFiles = false } = props
-  // стабильный id пустой строки, чтобы её редакторы не пересоздавались на каждый рендер
   const blankId = useRef(newId())
   if (rows.some((r) => r.id === blankId.current)) blankId.current = newId()
   const display = [...rows, blankRow<T>(blankId.current, allowFiles)]

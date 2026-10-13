@@ -8,7 +8,6 @@ export function newId(): string {
   return `id-${Date.now().toString(36)}-${counter}`
 }
 
-/** Мягкое декодирование: битые %-последовательности и `{{var}}` остаются как есть */
 function decode(s: string): string {
   try {
     return decodeURIComponent(s.replace(/\+/g, ' '))
@@ -17,7 +16,6 @@ function decode(s: string): string {
   }
 }
 
-/** Кодирует значение параметра, не трогая шаблоны `{{...}}` */
 export function encodeParam(s: string): string {
   return s
     .split(/(\{\{[^{}]*\}\})/g)
@@ -65,10 +63,6 @@ export function buildQuery(params: { key: string; value: string; enabled?: boole
     .join('&')
 }
 
-/**
- * URL → таблица. Включённые строки заменяются строками из URL (с сохранением
- * id и описаний по позиции), выключенные строки таблицы остаются на месте.
- */
 export function paramsFromUrl(url: string, current: KeyValue[]): KeyValue[] {
   const { query } = splitUrl(url)
   const parsed = query === null ? [] : parseQuery(query)
@@ -87,7 +81,6 @@ export function paramsFromUrl(url: string, current: KeyValue[]): KeyValue[] {
   return [...fromUrl, ...disabled]
 }
 
-/** Таблица → URL: заменяет query-часть, сохраняя базу и #hash */
 export function urlWithParams(url: string, params: KeyValue[]): string {
   const { base, hash } = splitUrl(url)
   const query = buildQuery(params)

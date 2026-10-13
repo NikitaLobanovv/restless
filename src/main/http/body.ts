@@ -7,13 +7,11 @@ import type { RequestBody } from '../../shared/model'
 
 export interface BuiltBody {
   body: string | Buffer | FormData | null
-  /** Content-Type, который будет выставлен, если пользователь не задал свой */
   contentType: string | null
 }
 
 export type FileGuard = (path: string) => void
 
-/** Собирает тело заново при каждом вызове (нужно для повторной отправки при 307/308) */
 export async function buildBody(body: RequestBody, guard: FileGuard): Promise<BuiltBody> {
   const contentType = autoContentType(body.type)
   switch (body.type) {

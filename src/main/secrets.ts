@@ -11,7 +11,6 @@ export function isEncrypted(stored: string): boolean {
   return stored.startsWith(PREFIX)
 }
 
-/** Шифрование средствами ОС (Keychain / DPAPI / libsecret) */
 export const safeStorageCodec: SecretCodec = {
   encrypt(plain) {
     if (!safeStorage.isEncryptionAvailable()) {
@@ -25,10 +24,6 @@ export const safeStorageCodec: SecretCodec = {
   }
 }
 
-/**
- * На Linux без keyring Electron использует backend `basic_text` —
- * значения лишь обфусцированы фиксированным ключом. Предупреждаем пользователя.
- */
 export function isWeakSecretStorage(): boolean {
   if (process.platform !== 'linux') return false
   try {
@@ -38,7 +33,6 @@ export function isWeakSecretStorage(): boolean {
   }
 }
 
-/** Заменяет значения секретов в тексте на маску (для истории и логов) */
 export function redactSecrets(text: string, secrets: string[]): string {
   let out = text
   for (const s of secrets) {

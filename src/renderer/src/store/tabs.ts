@@ -11,7 +11,6 @@ export interface Tab {
   requestId: string | null
   collectionId: string | null
   draft: RequestDraft
-  /** Последняя сохранённая версия (для новой вкладки — исходный черновик) */
   baseline: RequestDraft
   response: HttpResult | null
   sending: boolean
@@ -21,7 +20,6 @@ interface TabsState {
   tabs: Tab[]
   activeId: string | null
   loaded: boolean
-  /** Были изменения с момента последней записи в БД */
   pendingPersist: boolean
   load(): Promise<void>
   newTab(draft?: RequestDraft, opts?: { collectionId?: string | null }): string
@@ -35,7 +33,6 @@ interface TabsState {
   setResponse(id: string, response: HttpResult | null): void
   setSending(id: string, sending: boolean): void
   markSaved(id: string, saved: SavedRequest): void
-  /** Синхронизация с деревом после переименования/удаления */
   onRequestRenamed(requestId: string, name: string): void
   onRequestsDeleted(requestIds: string[]): void
   persist(): Promise<void>
@@ -64,7 +61,6 @@ export const useTabs = create<TabsState>((set, get) => {
   const changed = (patch: Partial<TabsState>, immediate = false): void => {
     set({ ...patch, pendingPersist: true })
     if (immediate) {
-      // структура вкладок (открыть/закрыть/переключить) сохраняется быстро
       if (persistTimer) clearTimeout(persistTimer)
       persistTimer = setTimeout(() => void get().persist(), 300)
     }
@@ -112,7 +108,6 @@ export const useTabs = create<TabsState>((set, get) => {
         return
       }
       const tab = makeTab(saved.draft, { requestId: saved.id, collectionId: saved.collectionId })
-      // пустую нетронутую вкладку заменяем, а не плодим новые
       const tabs = get().tabs
       const active = tabs.find((t) => t.id === get().activeId)
       const replace = active && !active.requestId && !isDirty(active) && !active.response && active.draft.url === ''
@@ -203,7 +198,6 @@ export const useTabs = create<TabsState>((set, get) => {
 
     onRequestsDeleted(ids) {
       const set_ = new Set(ids)
-      // вкладка остаётся открытой как несохранённый черновик
       changed(
         {
           tabs: get().tabs.map((t) =>
@@ -241,7 +235,6 @@ export function useActiveTab(): Tab | null {
   return useTabs((s) => s.tabs.find((t) => t.id === s.activeId) ?? null)
 }
 
-/** Автосохранение черновиков каждые 5 с (НФТ «Надёжность») */
 export function startAutosave(): () => void {
   const timer = setInterval(() => {
     if (useTabs.getState().pendingPersist) void useTabs.getState().persist()
@@ -249,7 +242,6 @@ export function startAutosave(): () => void {
   return () => clearInterval(timer)
 }
 
-/** Перезагружает подсказки переменных, если сменилась коллекция активной вкладки */
 useTabs.subscribe((s, prev) => {
   if (s.activeId === prev.activeId && s.tabs === prev.tabs) return
   const active = s.tabs.find((t) => t.id === s.activeId)

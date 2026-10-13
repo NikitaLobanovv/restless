@@ -1,11 +1,6 @@
 import { resolve } from 'node:path'
 import { loadConfig, saveConfig } from './config'
 
-/**
- * Renderer недоверенный: читать с диска можно только файлы, которые
- * пользователь сам выбрал в системном диалоге. Список переживает перезапуск,
- * чтобы сохранённые multipart-запросы продолжали работать.
- */
 const MAX_ALLOWED = 2000
 
 export function allowFiles(paths: string[]): void {

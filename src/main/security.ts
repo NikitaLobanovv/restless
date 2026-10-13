@@ -9,7 +9,6 @@ export function rendererIndexFile(): string {
   return join(__dirname, '../renderer/index.html')
 }
 
-/** URL, с которого разрешено обращаться к IPC и куда разрешено «навигировать» */
 export function isTrustedUrl(url: string): boolean {
   const dev = devServerUrl()
   if (dev) {
@@ -23,7 +22,6 @@ export function isTrustedUrl(url: string): boolean {
   return url === index || url.startsWith(`${index}#`) || url.startsWith(`${index}?`)
 }
 
-/** Строгий CSP: без unsafe-eval и удалённых скриптов. В dev нужен HMR-websocket и inline-преамбула React Refresh. */
 function contentSecurityPolicy(): string {
   const dev = devServerUrl()
   const devWs = dev ? ` ws://${new URL(dev).host}` : ''
@@ -54,7 +52,6 @@ export function setupSecurity(): void {
     })
   })
 
-  // никаких разрешений (камера, геолокация, уведомления, …) renderer'у не нужно
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false))
   session.defaultSession.setPermissionCheckHandler(() => false)
 
@@ -65,9 +62,7 @@ function openExternalSafely(url: string): void {
   try {
     const u = new URL(url)
     if (u.protocol === 'http:' || u.protocol === 'https:') void shell.openExternal(u.toString())
-  } catch {
-    /* игнорируем некорректные ссылки */
-  }
+  } catch {}
 }
 
 function hardenWebContents(contents: WebContents): void {

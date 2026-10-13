@@ -11,7 +11,6 @@ import {
   type RestlessApp
 } from './fixtures'
 
-/** Текст тела последнего ответа — через кнопку «Копировать ответ» (CodeMirror рисует только видимые строки) */
 async function responseText({ app, page }: RestlessApp): Promise<string> {
   await writeClipboard(app, '')
   await page.getByRole('button', { name: 'Копировать ответ' }).click()
@@ -38,7 +37,6 @@ test('сценарий 1: URL, метод, заголовки, JSON-тело →
   await page.getByTestId('method-select').selectOption('POST')
   await typeInto(page, page.getByTestId('url-input'), `${ECHO}/post?source=e2e`)
 
-  // URL → таблица параметров
   await expect(page.getByRole('tab', { name: 'Параметры (1)' })).toBeVisible()
 
   await page.getByRole('tab', { name: /^Заголовки/ }).click()
@@ -48,7 +46,6 @@ test('сценарий 1: URL, метод, заголовки, JSON-тело →
   await page.getByRole('tab', { name: /^Тело/ }).click()
   await page.getByRole('radio', { name: 'JSON' }).check()
   await typeInto(page, page.getByTestId('body-editor'), '{"hello":"world"}')
-  // авто Content-Type показан на вкладке заголовков
   await page.getByRole('tab', { name: /^Заголовки/ }).click()
   await expect(page.getByText('application/json', { exact: true })).toBeVisible()
 
@@ -61,10 +58,8 @@ test('сценарий 1: URL, метод, заголовки, JSON-тело →
   expect(body.json).toEqual({ hello: 'world' })
   expect(body.headers['X-Test']).toEqual(['e2e'])
   expect(body.args).toEqual({ source: ['e2e'] })
-  // Pretty: тело отформатировано с отступами
   await expect(page.getByTestId('response-body')).toContainText('"args": {')
 
-  // вкладки ответа
   await page
     .getByRole('tab', { name: /^Заголовки \(\d+\)/ })
     .last()
@@ -73,7 +68,6 @@ test('сценарий 1: URL, метод, заголовки, JSON-тело →
   await page.getByRole('tab', { name: 'Timeline' }).click()
   await expect(page.getByText('TCP-соединение')).toBeVisible()
 
-  // 4xx подсвечивается как ошибка клиента
   await typeInto(page, page.getByTestId('url-input'), `${ECHO}/status/404`)
   await page.getByTestId('method-select').selectOption('GET')
   await sendAndWait(page, /404/)
@@ -107,7 +101,6 @@ test('сценарий 2: коллекция с папками, сохранен
   await expect(request).toBeVisible()
   await expect(page.getByTestId('dirty')).toHaveCount(0)
 
-  // drag-and-drop запроса в другую папку
   await request.dragTo(page.getByTestId('tree-folder').filter({ hasText: 'Orders' }))
   await expect
     .poll(async () => {
@@ -117,7 +110,6 @@ test('сценарий 2: коллекция с папками, сохранен
     })
     .toEqual(['Get user'])
 
-  // дублирование и поиск по имени/URL
   await chooseMenuItem(app, 'Дублировать')
   await request.first().click({ button: 'right' })
   await expect(page.getByTestId('tree-request')).toHaveCount(2)
@@ -126,20 +118,17 @@ test('сценарий 2: коллекция с папками, сохранен
   await page.getByRole('searchbox', { name: 'Поиск по имени и URL' }).fill('нет такого')
   await expect(page.getByText('Ничего не найдено')).toBeVisible()
 
-  // несохранённый черновик во второй вкладке
   await page.getByTestId('new-tab').click()
   await typeInto(page, page.getByTestId('url-input'), `${ECHO}/draft-only`)
 
   const userData = r.userData
   await app.close()
 
-  // «через неделю»: перезапуск
   r = await launch(userData)
   const p2 = r.page
   await expect(p2.getByTestId('tree-collection').filter({ hasText: 'E2E API' })).toBeVisible()
   await p2.getByTestId('tree-folder').filter({ hasText: 'Orders' }).click()
   await expect(p2.getByTestId('tree-request').filter({ hasText: 'Get user' })).toHaveCount(2)
-  // сохранённый запрос, его копия (открылась при дублировании) и черновик
   await expect(p2.getByTestId('request-tab')).toHaveCount(3)
   await expect(p2.getByTestId('url-input')).toHaveText(`${ECHO}/draft-only`)
   await expect(p2.getByTestId('dirty')).toHaveCount(1)
@@ -182,7 +171,6 @@ test('сценарий 3: переключение окружений подст
 
   await page.getByTestId('env-select').selectOption({ label: 'dev' })
   await typeInto(page, page.getByTestId('url-input'), '{{baseUrl}}/ping')
-  // переменная распознана и подсвечена как определённая
   await expect(page.locator('[data-testid="url-input"] .cm-var-ok')).toHaveText('{{baseUrl}}')
 
   await page.getByRole('tab', { name: /^Заголовки/ }).click()
@@ -194,7 +182,6 @@ test('сценарий 3: переключение окружений подст
   expect(body.url).toContain('/anything/dev/ping')
   expect(body.headers.Authorization).toEqual(['Bearer secret-dev'])
 
-  // Ctrl+E: следующее окружение
   await page.keyboard.press('ControlOrMeta+e')
   await expect(page.getByTestId('env-select')).toHaveValue(/.+/)
   await expect(page.getByTestId('env-select').locator('option:checked')).toHaveText('prod')
@@ -203,11 +190,9 @@ test('сценарий 3: переключение окружений подст
   expect(body.url).toContain('/anything/prod/ping')
   expect(body.headers.Authorization).toEqual(['Bearer secret-prod'])
 
-  // неразрешённая переменная подсвечивается
   await typeInto(page, page.getByTestId('url-input'), '{{nope}}/x')
   await expect(page.locator('[data-testid="url-input"] .cm-var-missing')).toHaveText('{{nope}}')
 
-  // значение секрета не попадает в renderer
   const vars = await page.evaluate(() => window.api.variables.hints({ collectionId: null }))
   expect(vars.apiToken).toMatchObject({ value: '•••••', isSecret: true })
 })
@@ -227,7 +212,6 @@ test('сценарий 4: история — запрос находится и 
   await expect(page.getByTestId('response-status')).toHaveText(/200/)
   await expect(page.getByTestId('url-input')).toHaveText(`${ECHO}/get?from=history`)
 
-  // поиск по истории
   await page.getByRole('searchbox', { name: 'Поиск в истории' }).fill('from=history')
   await expect(page.getByTestId('history-item').first()).toBeVisible()
   await page.getByRole('searchbox', { name: 'Поиск в истории' }).fill('zzz-nothing')

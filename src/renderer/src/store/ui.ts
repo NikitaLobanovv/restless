@@ -23,7 +23,6 @@ interface UiState {
   db: DbStatus | null
   sidebarView: SidebarView
   quickSearchOpen: boolean
-  /** Открытый редактор переменных (null — закрыт) */
   variables: VariablesTarget | null
   toasts: Toast[]
   init(config: UiConfig, info: AppInfo): void
@@ -35,13 +34,11 @@ interface UiState {
   openVariables(target: VariablesTarget | null): void
   toast(kind: Toast['kind'], text: string): void
   dismissToast(id: number): void
-  /** Показывает ошибку IPC; при недоступной БД переключает на экран подключения */
   fail(err: unknown): void
 }
 
 let toastSeq = 0
 
-/** Тема задаётся атрибутом на <html>; для «как в системе» работает prefers-color-scheme */
 function applyTheme(theme: UiConfig['theme']): void {
   if (theme === 'system') delete document.documentElement.dataset.theme
   else document.documentElement.dataset.theme = theme
@@ -60,7 +57,6 @@ export const useUi = create<UiState>((set, get) => ({
     set({ config, info })
   },
   async setConfig(patch) {
-    // оптимистично — чтобы ресайз панелей не дёргался
     set({ config: { ...get().config, ...patch } })
     if (patch.theme) applyTheme(patch.theme)
     try {

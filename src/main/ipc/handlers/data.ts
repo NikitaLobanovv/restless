@@ -10,7 +10,6 @@ import { handle } from '../register'
 import { onTabsSaved } from '../../window'
 
 export function registerDataHandlers(): void {
-  /* Коллекции и папки */
   handle('collections:tree', () => col.getTree(getDb(), getWorkspaceId()))
   handle('collections:create', async ({ name }) => ({
     id: await col.createCollection(getDb(), getWorkspaceId(), name)
@@ -23,7 +22,6 @@ export function registerDataHandlers(): void {
   handle('folders:delete', ({ id }) => col.deleteFolder(getDb(), id))
   handle('folders:move', (input) => col.moveFolder(getDb(), input))
 
-  /* Запросы */
   handle('requests:get', ({ id }) => col.getRequest(getDb(), id))
   handle('requests:save', (input) => col.saveRequest(getDb(), input))
   handle('requests:rename', ({ id, name }) => col.renameRequest(getDb(), id, name))
@@ -32,7 +30,6 @@ export function registerDataHandlers(): void {
   handle('requests:move', (input) => col.moveRequest(getDb(), input))
   handle('requests:search', ({ query }) => col.searchRequests(getDb(), getWorkspaceId(), query))
 
-  /* Окружения */
   handle('environments:list', () => env.listEnvironments(getDb(), getWorkspaceId()))
   handle('environments:create', async ({ name }) => ({
     id: await env.createEnvironment(getDb(), getWorkspaceId(), name)
@@ -41,7 +38,6 @@ export function registerDataHandlers(): void {
   handle('environments:delete', ({ id }) => env.deleteEnvironment(getDb(), id))
   handle('environments:setActive', ({ id }) => env.setActiveEnvironment(getDb(), getWorkspaceId(), id))
 
-  /* Переменные. Для global scopeId — id рабочего пространства, его renderer не знает */
   handle('variables:list', ({ scope, scopeId }) =>
     env.listVariables(getDb(), scope, scope === 'global' ? getWorkspaceId() : requireId(scopeId))
   )
@@ -57,7 +53,6 @@ export function registerDataHandlers(): void {
   handle('variables:hints', async ({ collectionId }) => {
     const res = await env.loadVariableLayers(getDb(), getWorkspaceId(), collectionId, safeStorageCodec)
     const hints: Record<string, VariableHint> = {}
-    // от низшего приоритета к высшему, чтобы верхние слои перезаписали нижние
     for (let i = res.layers.length - 1; i >= 0; i--) {
       const src = res.sources[i]
       for (const [key, value] of Object.entries(res.layers[i])) {
@@ -68,13 +63,11 @@ export function registerDataHandlers(): void {
     return hints
   })
 
-  /* История */
   handle('history:list', ({ query }) => hist.listHistory(getDb(), query))
   handle('history:get', ({ id }) => hist.getHistory(getDb(), id))
   handle('history:delete', ({ id }) => hist.deleteHistory(getDb(), id))
   handle('history:clear', () => hist.clearHistory(getDb()))
 
-  /* Вкладки */
   handle('tabs:load', () => tabs.loadTabs(getDb()))
   handle('tabs:save', async ({ tabs: list }) => {
     await tabs.saveTabs(getDb(), list)

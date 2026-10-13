@@ -14,7 +14,6 @@ export interface RestlessApp {
   errors: string[]
 }
 
-/** Каждый тест начинает с пустой БД (схема остаётся) */
 async function resetDb(): Promise<void> {
   const client = new pg.Client({ connectionString: e2eDbUrl() })
   await client.connect()
@@ -30,7 +29,6 @@ async function resetDb(): Promise<void> {
   }
 }
 
-/** Запуск собранного приложения с отдельным userData и тестовой БД */
 export async function launch(userData?: string): Promise<RestlessApp> {
   const dir = userData ?? mkdtempSync(join(tmpdir(), 'restless-e2e-'))
   if (!userData) {
@@ -38,7 +36,6 @@ export async function launch(userData?: string): Promise<RestlessApp> {
     writeFileSync(join(dir, 'config.json'), JSON.stringify({ ui: { language: 'ru', theme: 'light' } }))
   }
   const app = await electron.launch({
-    // корень проекта: Electron возьмёт main и версию из package.json
     args: [root],
     cwd: root,
     env: {
@@ -58,7 +55,6 @@ export async function launch(userData?: string): Promise<RestlessApp> {
   return { app, page, userData: dir, errors }
 }
 
-/** Нативные контекстные меню Playwright не видит — выбираем пункт прямо в main-процессе */
 export async function chooseMenuItem(app: ElectronApplication, label: string): Promise<void> {
   await app.evaluate(({ Menu }, wanted) => {
     const original = Menu.prototype.popup
@@ -80,7 +76,6 @@ export async function writeClipboard(app: ElectronApplication, text: string): Pr
   await app.evaluate(({ clipboard }, t) => clipboard.writeText(t), text)
 }
 
-/** Ввод в CodeMirror-поле (contenteditable) */
 export async function typeInto(page: Page, locator: ReturnType<Page['locator']>, text: string): Promise<void> {
   await locator.click()
   await page.keyboard.press('ControlOrMeta+a')

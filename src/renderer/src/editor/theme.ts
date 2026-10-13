@@ -2,7 +2,6 @@ import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
-/** Тема на CSS-переменных: светлая/тёмная переключаются без пересоздания редактора */
 export const editorTheme = EditorView.theme({
   '&': {
     color: 'var(--text)',

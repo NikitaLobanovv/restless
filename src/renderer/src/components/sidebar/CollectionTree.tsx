@@ -17,7 +17,6 @@ interface FlatNode {
   name: string
   level: number
   collectionId: string
-  /** Для запроса — папка-контейнер, для папки — родитель */
   parentFolderId: string | null
   method?: string
   url?: string
@@ -43,10 +42,6 @@ function collectRequestIds(folders: FolderNode[], requests: RequestSummary[]): s
   return [...requests.map((r) => r.id), ...folders.flatMap((f) => collectRequestIds(f.folders, f.requests))]
 }
 
-/**
- * Плоский список видимых узлов — для отрисовки и навигации стрелками.
- * `toggled`: коллекции раскрыты по умолчанию (в наборе — свёрнутые), папки наоборот.
- */
 function flatten(tree: CollectionNode[], toggled: Set<string>, query: string): FlatNode[] {
   const q = query.trim().toLowerCase()
   const out: FlatNode[] = []
@@ -135,7 +130,6 @@ export function CollectionTree({ query }: { query: string }): React.JSX.Element 
       const isCollection = collectionIds.has(id)
       const currentlyOpen = isCollection ? !next.has(id) : next.has(id)
       const shouldOpen = open ?? !currentlyOpen
-      // для коллекции «в наборе» = свёрнута, для папки = раскрыта
       if (shouldOpen === !isCollection) next.add(id)
       else next.delete(id)
       return next
@@ -332,8 +326,6 @@ export function CollectionTree({ query }: { query: string }): React.JSX.Element 
     e.preventDefault()
   }
 
-  /* ---------- Drag and drop ---------- */
-
   const onDragStart = (e: React.DragEvent, node: FlatNode): void => {
     if (node.kind === 'collection') {
       e.preventDefault()
@@ -353,7 +345,6 @@ export function CollectionTree({ query }: { query: string }): React.JSX.Element 
     await run(async () => {
       if (src.kind === 'request') {
         if (target.kind === 'request') {
-          // перед целевым запросом, в его контейнере
           await api.requests.move({
             id: src.id,
             collectionId: target.collectionId,
@@ -371,7 +362,6 @@ export function CollectionTree({ query }: { query: string }): React.JSX.Element 
         }
         const moved = useTabs.getState().tabs.find((x) => x.requestId === src.id)
         if (moved && moved.collectionId !== target.collectionId) {
-          // переменные коллекции меняются вместе с местом запроса
           useTabs.setState({
             tabs: useTabs
               .getState()

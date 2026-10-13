@@ -1,4 +1,3 @@
-/* Минимальный логгер main-процесса. Секреты и пароли сюда не передаются. */
 const ts = (): string => new Date().toISOString()
 
 export const log = {

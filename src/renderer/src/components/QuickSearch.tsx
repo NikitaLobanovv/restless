@@ -6,7 +6,6 @@ import { useTabs } from '../store/tabs'
 import { useUi } from '../store/ui'
 import { Modal } from './Modal'
 
-/** Ctrl+P: поиск сохранённых запросов по имени и URL */
 export function QuickSearch(): React.JSX.Element | null {
   const { t } = useTranslation()
   const open = useUi((s) => s.quickSearchOpen)

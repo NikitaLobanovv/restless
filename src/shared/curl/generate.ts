@@ -1,7 +1,6 @@
 import type { RequestDraft } from '../model'
 import { autoContentType, hasHeader } from '../http-utils'
 
-/** POSIX-кавычки: всё в одинарных, `'` → `'\''` */
 export function shellQuote(s: string): string {
   if (s !== '' && /^[A-Za-z0-9_@%+=:,./-]+$/.test(s)) return s
   return `'${s.replace(/'/g, `'\\''`)}'`
@@ -18,7 +17,6 @@ export function generateCurl(draft: RequestDraft): string {
   const hasBody = body.type !== 'none'
   if (method === 'HEAD') parts.push('-I')
   else if (method !== 'GET' || (hasBody && method === 'GET')) {
-    // POST с телом — значение по умолчанию у curl, -X не нужен
     if (!(method === 'POST' && hasBody)) parts.push(`-X ${shellQuote(method)}`)
   }
   parts.unshift(`curl ${shellQuote(url)}`)

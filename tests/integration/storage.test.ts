@@ -11,7 +11,6 @@ import * as schema from '../../src/main/db/schema'
 import type { Db } from '../../src/main/db/types'
 import { fakeCodec, migrationsFolder } from '../helpers/db'
 
-/** Слой хранилища против настоящего PostgreSQL 16 из docker-compose (отдельная БД restless_it) */
 const baseUrl = process.env.DATABASE_URL ?? 'postgres://restless:change-me@localhost:5432/restless'
 const TEST_DB = 'restless_it'
 
@@ -34,7 +33,6 @@ beforeAll(async () => {
     migrationsTable: '__drizzle_migrations',
     migrationsSchema: 'public'
   })
-  // миграции идемпотентны
   await migrate(drizzle(pool), {
     migrationsFolder,
     migrationsTable: '__drizzle_migrations',

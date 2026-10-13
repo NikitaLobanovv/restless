@@ -2,7 +2,6 @@ import { ECHO } from './env'
 import { chooseMenuItem, expect, launch, typeInto } from './fixtures'
 import { test } from '@playwright/test'
 
-// Скриншоты для README: запускается вручную (SCREENSHOTS=1)
 test.skip(!process.env.SCREENSHOTS, 'только по запросу')
 
 test('скриншоты', async () => {

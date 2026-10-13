@@ -88,7 +88,6 @@ describe('коллекции и папки', () => {
     expect(tree[0].folders).toEqual([])
     expect(tree[1].folders[0].folders[0].name).toBe('f1')
 
-    // в самого себя нельзя
     await expect(col.moveFolder(db, { id: f1, collectionId: b, parentId: f2, index: 0 })).rejects.toThrow('into itself')
   })
 
@@ -122,7 +121,6 @@ describe('запросы', () => {
     expect(updated.id).toBe(saved.id)
     expect((await col.getRequest(db, saved.id))?.url).toBe('https://changed')
 
-    // сохранение с заранее известным id (новый запрос)
     const withId = await col.saveRequest(db, {
       id: '11111111-1111-4111-8111-111111111111',
       collectionId: a,

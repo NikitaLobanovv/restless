@@ -13,7 +13,6 @@ export interface HistoryInsert {
   responseBodyPreview: string
 }
 
-/** Запись + ротация до HISTORY_LIMIT в одной транзакции */
 export async function addHistory(db: Db, entry: HistoryInsert, limit = HISTORY_LIMIT): Promise<string> {
   return db.transaction(async (tx) => {
     const [row] = await tx
@@ -26,7 +25,6 @@ export async function addHistory(db: Db, entry: HistoryInsert, limit = HISTORY_L
         durationMs: entry.durationMs === null ? null : Math.round(entry.durationMs),
         sizeBytes: entry.sizeBytes,
         responseHeadersJson: entry.responseHeaders,
-        // PostgreSQL text не принимает NUL-символы
         responseBodyPreview: entry.responseBodyPreview.replace(/\0/g, '')
       })
       .returning({ id: history.id })

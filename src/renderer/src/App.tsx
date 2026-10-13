@@ -87,7 +87,6 @@ function runAction(action: MenuAction): void {
   }
 }
 
-/** Горячие клавиши раздела 8 (на macOS — Cmd). Ловим в capture-фазе, до редакторов. */
 function shortcutFor(e: KeyboardEvent): MenuAction | null {
   const mod = navigator.platform.toLowerCase().includes('mac') ? e.metaKey : e.ctrlKey
   if (e.ctrlKey && e.key === 'Tab') return e.shiftKey ? 'prevTab' : 'nextTab'
@@ -158,7 +157,6 @@ export function App(): React.JSX.Element {
     const onKey = (e: KeyboardEvent): void => {
       const action = shortcutFor(e)
       if (!action) return
-      // в модальных окнах — только их собственные клавиши
       if (document.querySelector('dialog[open]') && action !== 'send') return
       e.preventDefault()
       e.stopPropagation()

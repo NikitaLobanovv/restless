@@ -3,15 +3,9 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import type { UiConfig } from '../shared/model'
 
-/**
- * Локальные настройки приложения (не в БД: они нужны ещё до подключения к ней).
- * Хранятся в userData/config.json, запись атомарная (tmp + rename).
- */
 interface StoredConfig {
   ui: UiConfig
-  /** Строка подключения, введённая на экране подключения, — зашифрована safeStorage */
   dbUrlEncrypted: string | null
-  /** Файлы, выбранные пользователем через системный диалог (разрешены для отправки) */
   allowedFiles: string[]
 }
 

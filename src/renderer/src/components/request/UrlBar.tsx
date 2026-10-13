@@ -70,7 +70,6 @@ export function UrlBar({ tab }: { tab: Tab }): React.JSX.Element {
           placeholder={t('request.urlPlaceholder')}
           onChange={(url) => {
             if (url === tab.draft.url) return
-            // URL → таблица параметров
             update(tab.id, (d) => ({ ...d, url, params: paramsFromUrl(url, d.params) }))
           }}
           onEnter={() => void sendTab(tab.id)}

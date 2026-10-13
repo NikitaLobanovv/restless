@@ -12,7 +12,6 @@ import { handle } from '../register'
 
 let startupConnect: Promise<unknown> = Promise.resolve()
 
-/** db:status ждёт первичного подключения, чтобы renderer не мигал экраном ошибки */
 export function setStartupConnect(p: Promise<unknown>): void {
   startupConnect = p
 }
@@ -33,7 +32,6 @@ export function registerAppHandlers(): void {
     if (patch.theme && patch.theme !== prev.theme) nativeTheme.themeSource = next.theme
     if (patch.language && patch.language !== prev.language) setLanguage(next.language)
     if (patch.updateChannel && patch.updateChannel !== prev.updateChannel) configureUpdater()
-    // меню показывает выбранные тему и язык
     if (patch.theme || patch.language || patch.updateChannel) buildAppMenu()
     broadcast('config:changed', next)
     return next
@@ -84,7 +82,6 @@ export function registerAppHandlers(): void {
       )
       Menu.buildFromTemplate(template).popup({
         window: win,
-        // click может прийти после закрытия меню — даём ему тик
         callback: () => setTimeout(() => resolve(chosen), 50)
       })
     })

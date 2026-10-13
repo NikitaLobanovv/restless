@@ -1,10 +1,6 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 import { CHANNELS, EVENTS, type AppEvent } from '../shared/ipc-channels'
 
-/**
- * Узкий API для renderer: только функции из списка каналов.
- * Сам ipcRenderer наружу не отдаётся.
- */
 const api: Record<string, unknown> = {}
 
 for (const channel of CHANNELS) {

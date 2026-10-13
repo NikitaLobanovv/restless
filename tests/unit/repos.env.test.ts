@@ -51,7 +51,6 @@ describe('переменные', () => {
       fakeCodec
     )
     expect(views.find((v) => v.key === 'token')).toMatchObject({ value: null, isSecret: true, hasValue: true })
-    // читаем таблицу в обход репозитория — как это сделал бы посторонний
     const raw = (await db.execute(sql`select key, value from variables order by key`)) as unknown as {
       rows: { key: string; value: string }[]
     }
@@ -73,7 +72,6 @@ describe('переменные', () => {
     )
     const a = first.find((v) => v.key === 'a')!
     const tok = first.find((v) => v.key === 'token')!
-    // меняем местами ключи и не передаём значение секрета
     await env.saveVariables(
       db,
       'global',
@@ -88,12 +86,10 @@ describe('переменные', () => {
     expect(layers.layers[2]).toEqual({ token: 'old', a: '2' })
     expect(layers.secretValues).toEqual(['old'])
 
-    // обычная → секретная: значение шифруется
     await env.saveVariables(db, 'global', ws, [{ id: a.id, key: 'a', isSecret: true }], fakeCodec)
     expect((await env.listVariables(db, 'global', ws))[0]).toMatchObject({ key: 'a', isSecret: true, value: null })
     expect((await env.loadVariableLayers(db, ws, null, fakeCodec)).layers[2]).toEqual({ a: '2' })
 
-    // секретная → обычная без значения: старое значение не раскрывается
     await env.saveVariables(db, 'global', ws, [{ id: a.id, key: 'a', isSecret: false }], fakeCodec)
     expect((await env.listVariables(db, 'global', ws))[0]).toMatchObject({ value: '' })
   })
@@ -142,7 +138,6 @@ describe('переменные', () => {
     expect(mergeLayers(layers)).toEqual({ v: 'env', c: 'c', g: 'g' })
     expect(sources.map((s) => s.scope)).toEqual(['environment', 'collection', 'global'])
 
-    // битое значение секрета не роняет загрузку
     const broken = {
       ...fakeCodec,
       decrypt: () => {
@@ -229,7 +224,6 @@ describe('вкладки', () => {
     expect(loaded[1]).toMatchObject({ requestId: null, collectionId: null, isActive: true, savedDraft: null })
     expect(loaded[0].savedDraft?.url).toBe('')
 
-    // удаление запроса каскадно закрывает его вкладку
     await col.deleteRequest(db, r.id)
     expect(await tabs.loadTabs(db)).toHaveLength(1)
     await tabs.saveTabs(db, [])

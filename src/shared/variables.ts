@@ -1,11 +1,9 @@
 import type { KeyValue, RequestDraft } from './model'
 
-/** `{{ name }}` — имя: всё, кроме фигурных скобок, без переносов строк */
 export const VARIABLE_RE = /\{\{\s*([^{}\s][^{}\r\n]*?)\s*\}\}/g
 
 const MAX_DEPTH = 10
 
-/** Слои в порядке приоритета: первый выигрывает (окружение → коллекция → глобальные) */
 export type VariableLayer = Record<string, string>
 
 export interface ResolveResult {
@@ -25,10 +23,6 @@ export function findVariables(template: string): string[] {
   return [...names]
 }
 
-/**
- * Подставляет переменные. Значения могут сами ссылаться на переменные —
- * они раскрываются рекурсивно до MAX_DEPTH (защита от циклов).
- */
 export function resolveTemplate(template: string, vars: VariableLayer): ResolveResult {
   const unresolved = new Set<string>()
   const expand = (input: string, depth: number, stack: string[]): string =>
@@ -59,7 +53,6 @@ function resolveKv(list: KeyValue[], vars: VariableLayer, unresolved: Set<string
   })
 }
 
-/** Подставляет переменные во все части запроса: URL, параметры, заголовки, тело */
 export function resolveDraft(draft: RequestDraft, vars: VariableLayer): { draft: RequestDraft; unresolved: string[] } {
   const unresolved = new Set<string>()
   const one = (s: string): string => {
@@ -87,7 +80,6 @@ export function resolveDraft(draft: RequestDraft, vars: VariableLayer): { draft:
   return { draft: resolved, unresolved: [...unresolved] }
 }
 
-/** Все имена переменных, на которые ссылается активная часть запроса */
 export function referencedVariables(draft: RequestDraft): string[] {
   const parts: string[] = [draft.url]
   for (const kv of [...draft.params, ...draft.headers, ...draft.body.urlencoded]) {

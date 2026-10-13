@@ -10,10 +10,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { emptyDraft, type HttpResponseData, type HttpResult, type RequestDraft } from '../../src/shared/model'
 import { cancelHttp, responses, sendHttp } from '../../src/main/http/client'
 
-/**
- * Интеграционные тесты HTTP-клиента против echo-api (go-httpbin из docker-compose)
- * и локального HTTPS-сервера с самоподписанным сертификатом.
- */
 const ECHO = process.env.ECHO_URL ?? `http://127.0.0.1:${process.env.ECHO_PORT ?? '8080'}`
 
 const allowAll = (): void => undefined
@@ -33,7 +29,6 @@ function send(d: RequestDraft, requestId: string = crypto.randomUUID()): Promise
 
 let tls: HttpsServer
 let tlsUrl = ''
-// go-httpbin не умеет brotli и ограничивает размер ответа — эти случаи отдаёт локальный сервер
 let local: HttpServer
 let localUrl = ''
 

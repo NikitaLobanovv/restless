@@ -15,7 +15,6 @@ interface DataState {
   environments: EnvironmentInfo[]
   history: HistoryItem[]
   historyQuery: string
-  /** Подсказки переменных для текущей коллекции активной вкладки */
   hints: Record<string, VariableHint>
   hintsCollectionId: string | null
   loadTree(): Promise<void>
@@ -68,8 +67,6 @@ export const useData = create<DataState>((set, get) => ({
   }
 }))
 
-/* ---------- Утилиты по дереву ---------- */
-
 export function findRequest(tree: CollectionNode[], id: string): RequestSummary | null {
   const walk = (folders: FolderNode[], requests: RequestSummary[]): RequestSummary | null => {
     const r = requests.find((x) => x.id === id)
@@ -103,7 +100,6 @@ export function findFolder(tree: CollectionNode[], id: string): FolderNode | nul
   return null
 }
 
-/** Плоский список «коллекция / папка / подпапка» для выбора места сохранения */
 export function flattenContainers(
   tree: CollectionNode[]
 ): { collectionId: string; folderId: string | null; label: string; depth: number }[] {

@@ -19,8 +19,6 @@ export class NotFoundError extends Error {
   }
 }
 
-/* ---------- Коллекции ---------- */
-
 export async function getTree(db: Db, workspaceId: string): Promise<CollectionNode[]> {
   const cols = await db
     .select()
@@ -85,12 +83,9 @@ export async function renameCollection(db: Db, id: string, name: string): Promis
   if (res.length === 0) throw new NotFoundError('Collection')
 }
 
-/** Папки, запросы, вкладки и переменные удаляются каскадно (FK + триггер) */
 export async function deleteCollection(db: Db, id: string): Promise<void> {
   await db.delete(collections).where(eq(collections.id, id))
 }
-
-/* ---------- Папки ---------- */
 
 async function nextFolderOrder(db: Executor, collectionId: string, parentId: string | null): Promise<number> {
   const [{ m }] = await db
@@ -127,7 +122,6 @@ export async function deleteFolder(db: Db, id: string): Promise<void> {
   await db.delete(folders).where(eq(folders.id, id))
 }
 
-/** id папки и всех её потомков */
 async function descendantFolderIds(db: Executor, id: string): Promise<string[]> {
   const rows = await db.execute<{ id: string }>(sql`
     WITH RECURSIVE tree AS (
@@ -140,7 +134,6 @@ async function descendantFolderIds(db: Executor, id: string): Promise<string[]> 
   return list.map((r) => r.id)
 }
 
-/** Вставляет элемент в список соседей на позицию index и перенумеровывает sort_order */
 function reorder(ids: string[], movedId: string, index: number): string[] {
   const rest = ids.filter((x) => x !== movedId)
   const i = Math.max(0, Math.min(index, rest.length))
@@ -164,7 +157,6 @@ export async function moveFolder(
       if (!parent || parent.collectionId !== input.collectionId) throw new NotFoundError('Parent folder')
     }
     if (folder.collectionId !== input.collectionId) {
-      // вся ветка переезжает в другую коллекцию
       await tx.update(folders).set({ collectionId: input.collectionId }).where(inArray(folders.id, subtree))
       await tx.update(requests).set({ collectionId: input.collectionId }).where(inArray(requests.folderId, subtree))
     }
@@ -189,8 +181,6 @@ export async function moveFolder(
     }
   })
 }
-
-/* ---------- Запросы ---------- */
 
 function toSaved(row: typeof requests.$inferSelect): SavedRequest {
   const draft = RequestDraftSchema.parse({
@@ -301,7 +291,6 @@ export async function duplicateRequest(db: Db, id: string, copySuffix = ' (copy)
   return db.transaction(async (tx) => {
     const [src] = await tx.select().from(requests).where(eq(requests.id, id))
     if (!src) throw new NotFoundError('Request')
-    // копия встаёт сразу после оригинала
     await tx
       .update(requests)
       .set({ sortOrder: sql`${requests.sortOrder} + 1` })
@@ -369,7 +358,6 @@ function escapeLike(s: string): string {
   return s.replace(/[\\%_]/g, (c) => `\\${c}`)
 }
 
-/** Поиск по имени и URL (ILIKE использует GIN-индексы pg_trgm) */
 export async function searchRequests(
   db: Db,
   workspaceId: string,

@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 
 interface TabsProps {
-  /** Префикс id: на экране несколько наборов вкладок */
   idPrefix: string
   label: string
   value: string
@@ -10,7 +9,6 @@ interface TabsProps {
   className?: string
 }
 
-/** Доступные вкладки (WAI-ARIA tabs): стрелки, Home/End, видимый фокус */
 export function Tabs({ idPrefix, label, value, onChange, items, className }: TabsProps): React.JSX.Element {
   const refs = useRef<(HTMLButtonElement | null)[]>([])
   const onKeyDown = (e: React.KeyboardEvent, index: number): void => {

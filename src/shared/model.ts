@@ -13,7 +13,6 @@ export type KeyValue = z.infer<typeof KeyValueSchema>
 
 export const FormFieldSchema = KeyValueSchema.extend({
   kind: z.enum(['text', 'file']).default('text'),
-  /** Абсолютные пути файлов (только для kind = file) */
   files: z.array(z.string()).default([])
 })
 export type FormField = z.infer<typeof FormFieldSchema>
@@ -23,13 +22,9 @@ export type BodyType = (typeof BODY_TYPES)[number]
 
 export const RequestBodySchema = z.object({
   type: z.enum(BODY_TYPES).default('none'),
-  /** json / text / xml */
   raw: z.string().default(''),
-  /** urlencoded */
   urlencoded: z.array(KeyValueSchema).default([]),
-  /** multipart */
   multipart: z.array(FormFieldSchema).default([]),
-  /** binary */
   binaryPath: z.string().nullable().default(null)
 })
 export type RequestBody = z.infer<typeof RequestBodySchema>
@@ -41,7 +36,6 @@ export const RequestSettingsSchema = z.object({
 })
 export type RequestSettings = z.infer<typeof RequestSettingsSchema>
 
-/** Черновик/содержимое запроса — то, что редактируется во вкладке */
 export const RequestDraftSchema = z.object({
   name: z.string().max(500).default('New request'),
   method: z
@@ -91,9 +85,7 @@ export interface HttpResponseData {
   durationMs: number
   sizeBytes: number
   contentType: string
-  /** Текстовое тело (может быть усечено, см. truncated) */
   bodyText: string
-  /** data:-URL для изображений */
   imageDataUrl: string | null
   isLarge: boolean
   truncated: boolean
@@ -109,8 +101,6 @@ export interface HttpErrorData {
 }
 
 export type HttpResult = HttpResponseData | HttpErrorData
-
-/* ---------- Хранилище ---------- */
 
 export interface CollectionNode {
   id: string
@@ -153,11 +143,9 @@ export interface EnvironmentInfo {
 export const VARIABLE_SCOPES = ['global', 'environment', 'collection'] as const
 export type VariableScope = (typeof VARIABLE_SCOPES)[number]
 
-/** Переменная в том виде, в каком её видит renderer: секреты без значения */
 export interface VariableView {
   id: string
   key: string
-  /** null для секретных переменных */
   value: string | null
   isSecret: boolean
   hasValue: boolean
@@ -166,7 +154,6 @@ export interface VariableView {
 export const VariableInputSchema = z.object({
   id: z.string().uuid().optional(),
   key: z.string().min(1).max(200),
-  /** undefined для секрета = оставить прежнее значение */
   value: z.string().max(100_000).optional(),
   isSecret: z.boolean().default(false)
 })
@@ -215,7 +202,6 @@ export interface UiConfig {
   sidebarWidth: number
   sidebarCollapsed: boolean
   responseLayout: 'right' | 'bottom'
-  /** Доля панели редактора, 0.2–0.8 */
   splitRatio: number
   updateChannel: 'stable' | 'beta'
 }

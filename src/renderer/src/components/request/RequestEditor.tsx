@@ -104,10 +104,7 @@ export function RequestEditor({ tab }: { tab: Tab }): React.JSX.Element {
           <KeyValueTable
             rows={draft.params}
             ariaLabel={t('request.params')}
-            onChange={(params) =>
-              // таблица → URL
-              update(tab.id, (d) => ({ ...d, params, url: urlWithParams(d.url, params) }))
-            }
+            onChange={(params) => update(tab.id, (d) => ({ ...d, params, url: urlWithParams(d.url, params) }))}
           />
         )}
         {section === 'headers' && (

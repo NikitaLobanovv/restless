@@ -16,7 +16,6 @@ export function autoContentType(type: BodyType): string | null {
       return 'application/x-www-form-urlencoded'
     case 'binary':
       return 'application/octet-stream'
-    // multipart: boundary выставляет сам FormData
     default:
       return null
   }
@@ -120,7 +119,6 @@ export function validateJson(text: string): string | null {
   }
 }
 
-/** Простое форматирование XML без внешних зависимостей */
 export function formatXml(xml: string, indent = '  '): string {
   const tokens = xml
     .replace(/>\s+</g, '><')
@@ -134,7 +132,6 @@ export function formatXml(xml: string, indent = '  '): string {
   const lines: string[] = []
   for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i]
-    // <tag>текст</tag> — в одну строку
     if (isOpening(tok) && i + 2 < tokens.length && !tokens[i + 1].startsWith('<') && isClosing(tokens[i + 2])) {
       lines.push(indent.repeat(depth) + tok + tokens[i + 1] + tokens[i + 2])
       i += 2

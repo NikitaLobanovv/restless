@@ -30,8 +30,6 @@ export const collections = pgTable(
       .notNull()
       .references(() => workspaces.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
-    // Переменные коллекции живут в таблице variables (scope = collection);
-    // поле оставлено по ТЗ для импорта/экспорта и задела на будущее.
     variablesJson: jsonb('variables_json').$type<Record<string, unknown>>().notNull().default({}),
     authJson: jsonb('auth_json').$type<Record<string, unknown> | null>(),
     sortOrder: integer('sort_order').notNull().default(0),
@@ -103,10 +101,8 @@ export const variables = pgTable(
   {
     id: uuid('id').primaryKey().defaultRandom(),
     scope: variableScope('scope').notNull(),
-    /** id окружения или коллекции; для global — id рабочего пространства */
     scopeId: uuid('scope_id').notNull(),
     key: text('key').notNull(),
-    /** Для секретов: `enc:v1:<base64>` (safeStorage) */
     value: text('value').notNull().default(''),
     isSecret: boolean('is_secret').notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0)

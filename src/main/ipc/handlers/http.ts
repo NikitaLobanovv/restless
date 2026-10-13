@@ -57,7 +57,6 @@ export function registerHttpHandlers(): void {
     })
 
     if (getStatus().connected) {
-      // в историю — исходный (неразрешённый) черновик: `{{token}}` вместо значения секрета
       const isError = 'error' in result
       void addHistory(getDb(), {
         draft,
@@ -120,7 +119,6 @@ export function registerHttpHandlers(): void {
     const layers: VariableLayer[] = vars.layers.map((layer, i) => {
       if (includeSecrets) return layer
       const masked: VariableLayer = { ...layer }
-      // секрет остаётся плейсхолдером: `{{x}}` → `{{x}}` (цикл детектируется и не раскрывается)
       for (const k of vars.sources[i]?.secretKeys ?? []) masked[k] = `{{${k}}}`
       return masked
     })

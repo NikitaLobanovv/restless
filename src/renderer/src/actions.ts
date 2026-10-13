@@ -103,7 +103,6 @@ export async function copyAsCurl(tabId?: string): Promise<void> {
   }
 }
 
-/** Импорт cURL: в текущую вкладку, если она пустая, иначе в новую */
 export function importCurlText(text: string): boolean {
   if (!looksLikeCurl(text)) return false
   try {
@@ -148,7 +147,6 @@ export function formatActiveBody(): void {
   }
 }
 
-/** Ctrl+E: следующее окружение по кругу (включая «без окружения») */
 export async function cycleEnvironment(): Promise<void> {
   const envs = useData.getState().environments
   if (envs.length === 0) {

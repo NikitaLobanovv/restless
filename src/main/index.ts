@@ -12,7 +12,6 @@ import { setupSecurity } from './security'
 import { startAutoUpdates } from './updater'
 import { createMainWindow, getMainWindow } from './window'
 
-// Все renderer'ы — в песочнице, без исключений
 app.enableSandbox()
 
 if (process.env.RESTLESS_USER_DATA) app.setPath('userData', process.env.RESTLESS_USER_DATA)
@@ -31,8 +30,6 @@ if (!app.requestSingleInstanceLock()) {
   process.on('unhandledRejection', (reason) => log.error('Unhandled rejection:', reason))
 
   void app.whenReady().then(() => {
-    // Linux без keyring/KWallet: штатный fallback Electron (basic_text). Секреты в БД всё равно
-    // не хранятся открытым текстом, а UI показывает предупреждение о слабой защите.
     if (process.platform === 'linux' && !safeStorage.isEncryptionAvailable()) {
       safeStorage.setUsePlainTextEncryption(true)
     }
@@ -46,7 +43,6 @@ if (!app.requestSingleInstanceLock()) {
     registerDataHandlers()
     assertAllChannelsRegistered()
 
-    // подключение к БД идёт параллельно с открытием окна (холодный старт < 2 с)
     setStartupConnect(connectOnStartup())
 
     buildAppMenu()

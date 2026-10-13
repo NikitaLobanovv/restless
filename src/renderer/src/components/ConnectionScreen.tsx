@@ -4,10 +4,6 @@ import { api } from '../api'
 import { useUi } from '../store/ui'
 import { Icon } from './Icon'
 
-/**
- * Экран подключения к PostgreSQL: показывается, если БД недоступна.
- * Строка подключения уходит в main и обратно не возвращается.
- */
 export function ConnectionScreen({ onConnected }: { onConnected: () => void }): React.JSX.Element {
   const { t } = useTranslation()
   const db = useUi((s) => s.db)

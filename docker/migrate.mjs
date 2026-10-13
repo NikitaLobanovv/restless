@@ -1,5 +1,3 @@
-// Применяет SQL-миграции из ./drizzle тем же мигратором, что и приложение при старте.
-// В отличие от `drizzle-kit migrate`, печатает причину ошибки и подсказку.
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import pg from 'pg'

@@ -23,7 +23,6 @@ const id = z.string().uuid()
 const name = z.string().trim().min(1).max(200)
 const none = z.void()
 
-/** Фантомный тип для описания результата канала */
 const out = <T>(): T => undefined as T
 
 function def<I extends z.ZodType, O>(input: I, output: O): { input: I; output: O } {
@@ -44,7 +43,6 @@ export interface AppInfo {
   version: string
   platform: string
   isDev: boolean
-  /** Linux без keyring: safeStorage шифрует фиксированным ключом */
   weakSecretStorage: boolean
   secretStorageAvailable: boolean
 }
